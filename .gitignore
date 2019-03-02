@@ -6,3 +6,5 @@ puball.sh
 setenv.sh
 /.project
 package-lock.json
+.DS_Store
+.idea

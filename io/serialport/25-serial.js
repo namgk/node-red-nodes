@@ -169,7 +169,7 @@ module.exports = function(RED) {
         return {
             get:function(serialConfig) {
                 // make local copy of configuration -- perhaps not needed?
-                var port      = serialConfig.serialport,
+                var port      = serialConfig.serialport + "",
                     baud      = serialConfig.serialbaud,
                     databits  = serialConfig.databits,
                     parity    = serialConfig.parity,
@@ -287,6 +287,19 @@ module.exports = function(RED) {
                     //newline = newline.replace("\\n","\n").replace("\\r","\r");
                     var olderr = "";
                     var setupSerial = function() {
+                        // resolve port if expression and then...
+                        if (serialConfig.serialport.startsWith("regex:")){
+                            const pattern = serialConfig.serialport.substring("regex:".length);
+                            serialp.list(function (err, ports) {
+                              for (var i = 0; i < ports.length; i++){
+                                var pm = ports[i]['manufacturer'];
+                                if (pm && pm.match(pattern)) {
+                                  port = ports[i].comName.toString();
+                                  break;
+                                }
+                              }
+                            });
+                        }
                         obj.serial = new serialp(port,{
                             baudRate: baud,
                             dataBits: databits,
@@ -393,7 +406,7 @@ module.exports = function(RED) {
                         // obj.serial.on("disconnect",function() {
                         //     RED.log.error(RED._("serial.errors.disconnected",{port:port}));
                         // });
-                    }
+                    };
                     setupSerial();
                     return obj;
                 }());

@@ -1,16 +1,19 @@
 {
-    "name"          : "node-red-node-serialport",
-    "version"       : "0.6.8",
-    "description"   : "Node-RED nodes to talk to serial ports",
-    "dependencies"  : {
-        "serialport"   : "^6.2.2"
+    "name": "node-red-node-serialport",
+    "version": "0.6.8",
+    "description": "Node-RED nodes to talk to serial ports",
+    "dependencies": {
+        "serialport": "^6.2.2"
     },
-    "repository" : {
-        "type":"git",
-        "url":"https://github.com/node-red/node-red-nodes/tree/master/io/serialport"
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/node-red/node-red-nodes/tree/master/io/serialport"
     },
     "license": "Apache-2.0",
-    "keywords": [ "node-red", "serial" ],
+    "keywords": [
+        "node-red",
+        "serial"
+    ],
     "node-red": {
         "version": ">=0.16.0",
         "nodes": {
