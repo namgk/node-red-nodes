@@ -1,7 +1,7 @@
 {
-    "name": "node-red-node-serialport",
-    "version": "0.6.8",
-    "description": "Node-RED nodes to talk to serial ports",
+    "name": "node-red-node-serialport-wildcard",
+    "version": "0.7.0",
+    "description": "Node-RED nodes to talk to serial ports, supporting a wildcard manufacturer name",
     "dependencies": {
         "serialport": "^6.2.2"
     },
