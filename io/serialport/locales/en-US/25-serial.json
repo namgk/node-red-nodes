@@ -22,7 +22,7 @@
             "none": "none"
         },
         "placeholder": {
-            "serialport": "for example: /dev/ttyUSB0/, or *xx*"
+            "serialport": "for example: /dev/ttyUSB0/, or regex:Arduino*"
         },
         "parity": {
             "none": "None",

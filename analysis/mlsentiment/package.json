@@ -1,9 +1,9 @@
 {
-    "name"          : "node-red-node-sentiment",
-    "version"       : "0.1.3",
-    "description"   : "A Node-RED node that uses the AFINN-165 wordlists for sentiment analysis of words.",
+    "name"          : "node-red-node-multilang-sentiment",
+    "version"       : "0.1.0",
+    "description"   : "A Node-RED node that uses the AFINN-165 wordlists for sentiment analysis of words translated into multiple languages including emojis.",
     "dependencies"  : {
-        "sentiment" : "2.1.0"
+        "multilang-sentiment" : "^1.2.0"
     },
     "repository" : {
         "type":"git",
@@ -13,7 +13,7 @@
     "keywords": [ "node-red", "sentiment", "anaylsis", "AFINN" ],
     "node-red" : {
         "nodes" : {
-            "sentiment": "72-sentiment.js"
+            "mlsentiment": "mlsentiment.js"
         }
     },
     "author": {

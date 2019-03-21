@@ -286,20 +286,40 @@ module.exports = function(RED) {
                     }
                     //newline = newline.replace("\\n","\n").replace("\\r","\r");
                     var olderr = "";
-                    var setupSerial = function() {
-                        // resolve port if expression and then...
-                        if (serialConfig.serialport.startsWith("regex:")){
-                            const pattern = serialConfig.serialport.substring("regex:".length);
-                            serialp.list(function (err, ports) {
-                              for (var i = 0; i < ports.length; i++){
-                                var pm = ports[i]['manufacturer'];
-                                if (pm && pm.match(pattern)) {
-                                  port = ports[i].comName.toString();
-                                  break;
+                    var setupRegex = function() {
+                        let pattern = serialConfig.serialport.substring("regex:".length);
+                        serialp.list()
+                            .then(portInfos => {
+                                for (var i = 0; i < portInfos.length; i++){
+                                    var pm = portInfos[i]['manufacturer'];
+                                    if (pm && pm.match(pattern)) {
+                                    port = portInfos[i].comName.toString();
+                                    break;
+                                    }
                                 }
-                              }
+
+                                if (port.length > 0 && !port.startsWith('regex:')){
+                                    if (obj.toutregex){
+                                        clearTimeout(obj.toutregex);
+                                    }
+                                    setupSerial();
+                                } else {
+                                    throw new Error('No ports found');
+                                }
+                            })
+                            .catch(err => {
+                                if (err) {
+                                    if (err.toString() !== olderr) {
+                                        olderr = err.toString();
+                                        RED.log.error(RED._("serial.errors.error",{port:serialConfig.serialport,error:err}));
+                                    }
+                                    obj.toutregex = setTimeout(function() {
+                                        setupRegex();
+                                    }, settings.serialReconnectTime);
+                                }
                             });
-                        }
+                    };
+                    var setupSerial = function() {
                         obj.serial = new serialp(port,{
                             baudRate: baud,
                             dataBits: databits,
@@ -407,7 +427,12 @@ module.exports = function(RED) {
                         //     RED.log.error(RED._("serial.errors.disconnected",{port:port}));
                         // });
                     };
-                    setupSerial();
+                    // namgk: resolve port if expression and then...
+                    if (serialConfig.serialport.startsWith("regex:")){
+                        setupRegex();
+                    } else {
+                        setupSerial();
+                    }
                     return obj;
                 }());
                 return connections[id];
@@ -419,12 +444,16 @@ module.exports = function(RED) {
                     }
                     connections[port]._closing = true;
                     try {
-                        connections[port].close(function() {
-                            RED.log.info(RED._("serial.errors.closed",{port:port}));
+                        if (connections[port].serial){
+                            connections[port].close(function() {
+                                RED.log.info(RED._("serial.errors.closed",{port:port}));
+                                done();
+                            });
+                        } else {
                             done();
-                        });
+                        }
                     }
-                    catch(err) { }
+                    catch(err) { console.log(err)}
                     delete connections[port];
                 }
                 else {
